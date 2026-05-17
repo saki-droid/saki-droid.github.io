@@ -1,0 +1,439 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Saki · 大吉</title>
+<style>
+  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+  @font-face {
+    font-family: 'SF Pro';
+    src: local('Inter'), local('-apple-system'), local('BlinkMacSystemFont');
+  }
+
+  :root {
+    --bg: #070708;
+    --glass: rgba(255,255,255,0.04);
+    --glass-border: rgba(255,255,255,0.06);
+    --glass-hover: rgba(255,255,255,0.08);
+    --text-primary: rgba(255,255,255,0.92);
+    --text-secondary: rgba(255,255,255,0.5);
+    --text-tertiary: rgba(255,255,255,0.3);
+    --radius: 20px;
+    --radius-sm: 12px;
+    --ease: cubic-bezier(0.25, 0.1, 0.25, 1);
+  }
+
+  html { font-size: 16px; -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; }
+  body {
+    font-family: 'SF Pro', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    background: var(--bg);
+    color: var(--text-primary);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    overflow-x: hidden;
+    line-height: 1.6;
+  }
+
+  /* ── Liquid BG ── */
+  .liquid-bg {
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    overflow: hidden;
+    pointer-events: none;
+  }
+  .liquid-bg .orb {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(120px);
+    opacity: 0.35;
+    will-change: transform;
+  }
+  .liquid-bg .orb:nth-child(1) {
+    width: 600px; height: 600px;
+    background: radial-gradient(circle, #2563eb 0%, transparent 70%);
+    top: -15%; left: -10%;
+    animation: float1 24s var(--ease) infinite;
+  }
+  .liquid-bg .orb:nth-child(2) {
+    width: 500px; height: 500px;
+    background: radial-gradient(circle, #7c3aed 0%, transparent 70%);
+    bottom: -20%; right: -8%;
+    animation: float2 28s var(--ease) infinite;
+  }
+  .liquid-bg .orb:nth-child(3) {
+    width: 400px; height: 400px;
+    background: radial-gradient(circle, #0891b2 0%, transparent 70%);
+    top: 40%; left: 55%;
+    animation: float3 32s var(--ease) infinite;
+  }
+  .liquid-bg .orb:nth-child(4) {
+    width: 350px; height: 350px;
+    background: radial-gradient(circle, #4f46e5 0%, transparent 70%);
+    top: 10%; right: 20%;
+    animation: float4 26s var(--ease) infinite;
+    opacity: 0.2;
+  }
+
+  @keyframes float1 {
+    0%, 100% { transform: translate(0, 0) scale(1) rotate(0deg); }
+    33% { transform: translate(80px, -60px) scale(1.05) rotate(120deg); }
+    66% { transform: translate(-40px, 80px) scale(0.95) rotate(240deg); }
+  }
+  @keyframes float2 {
+    0%, 100% { transform: translate(0, 0) scale(1) rotate(0deg); }
+    33% { transform: translate(-70px, -40px) scale(1.08) rotate(120deg); }
+    66% { transform: translate(50px, 70px) scale(0.92) rotate(240deg); }
+  }
+  @keyframes float3 {
+    0%, 100% { transform: translate(0, 0) scale(1); }
+    50% { transform: translate(60px, -50px) scale(1.1); }
+  }
+  @keyframes float4 {
+    0%, 100% { transform: translate(0, 0) scale(1); }
+    50% { transform: translate(-50px, 40px) scale(1.15); }
+  }
+
+  /* ── Grain overlay ── */
+  .grain {
+    position: fixed;
+    inset: 0;
+    z-index: 1;
+    pointer-events: none;
+    opacity: 0.035;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+    background-repeat: repeat;
+    background-size: 256px 256px;
+  }
+
+  /* ── Layout ── */
+  .container {
+    position: relative;
+    z-index: 2;
+    width: 100%;
+    max-width: 680px;
+    padding: 80px 24px 120px;
+  }
+
+  /* ── Glass card ── */
+  .glass {
+    background: var(--glass);
+    backdrop-filter: blur(40px);
+    -webkit-backdrop-filter: blur(40px);
+    border: 1px solid var(--glass-border);
+    border-radius: var(--radius);
+  }
+
+  /* ── Header / Avatar ── */
+  header {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    margin-bottom: 60px;
+    opacity: 0;
+    animation: fadeUp 0.9s var(--ease) 0.1s forwards;
+  }
+  .avatar-wrapper {
+    position: relative;
+    width: 96px; height: 96px;
+    margin-bottom: 24px;
+  }
+  .avatar-wrapper::before {
+    content: '';
+    position: absolute;
+    inset: -3px;
+    border-radius: 50%;
+    background: conic-gradient(from 0deg, rgba(255,255,255,0.08), rgba(255,255,255,0.02), rgba(255,255,255,0.08));
+    mask: radial-gradient(farthest-side, transparent calc(100% - 1.5px), #fff calc(100% - 1.5px));
+    -webkit-mask: radial-gradient(farthest-side, transparent calc(100% - 1.5px), #fff calc(100% - 1.5px));
+    animation: spin 6s linear infinite;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  .avatar {
+    width: 100%; height: 100%;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #1e1e24, #2a2a32);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 32px;
+    font-weight: 400;
+    color: rgba(255,255,255,0.6);
+    letter-spacing: 1px;
+    border: none;
+    user-select: none;
+  }
+  h1 {
+    font-size: 28px;
+    font-weight: 600;
+    letter-spacing: -0.3px;
+    margin-bottom: 4px;
+  }
+  .name-cn {
+    display: block;
+    font-size: 14px;
+    font-weight: 400;
+    color: var(--text-tertiary);
+    letter-spacing: 2px;
+    margin-bottom: 8px;
+  }
+  .subtitle {
+    font-size: 15px;
+    color: var(--text-secondary);
+    font-weight: 400;
+    line-height: 1.5;
+  }
+  .badge {
+    display: inline-block;
+    margin-top: 16px;
+    padding: 5px 14px;
+    border-radius: 100px;
+    font-size: 12px;
+    font-weight: 500;
+    letter-spacing: 0.3px;
+    color: var(--text-secondary);
+    background: var(--glass);
+    border: 1px solid var(--glass-border);
+    backdrop-filter: blur(20px);
+  }
+
+  /* ── Section ── */
+  section {
+    margin-bottom: 40px;
+    opacity: 0;
+    animation: fadeUp 0.9s var(--ease) forwards;
+  }
+  section:nth-of-type(1) { animation-delay: 0.2s; }
+  section:nth-of-type(2) { animation-delay: 0.35s; }
+  section:nth-of-type(3) { animation-delay: 0.5s; }
+  .section-label {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 1.2px;
+    text-transform: uppercase;
+    color: var(--text-tertiary);
+    margin-bottom: 16px;
+  }
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(16px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* ── Bio ── */
+  .bio {
+    padding: 20px 24px;
+  }
+  .bio p {
+    font-size: 15px;
+    color: var(--text-secondary);
+    line-height: 1.8;
+  }
+
+  /* ── Contact ── */
+  .contact-card {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px 20px;
+    border-radius: var(--radius-sm);
+    background: var(--glass);
+    border: 1px solid var(--glass-border);
+    backdrop-filter: blur(40px);
+    -webkit-backdrop-filter: blur(40px);
+    text-decoration: none;
+    color: var(--text-primary);
+    font-size: 15px;
+    transition: background 0.35s var(--ease), border-color 0.35s var(--ease), transform 0.35s var(--ease);
+  }
+  .contact-card:hover {
+    background: var(--glass-hover);
+    border-color: rgba(255,255,255,0.1);
+    transform: translateY(-1px);
+  }
+  .contact-card:active {
+    transform: scale(0.98);
+  }
+  .contact-left {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .contact-icon {
+    width: 36px; height: 36px;
+    border-radius: 10px;
+    background: rgba(100,181,246,0.1);
+    color: #64b5f6;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+  .contact-label {
+    font-size: 12px;
+    color: var(--text-tertiary);
+    letter-spacing: 0.5px;
+  }
+  .contact-arrow {
+    font-size: 14px;
+    color: var(--text-tertiary);
+    transition: transform 0.3s var(--ease), color 0.3s var(--ease);
+  }
+  .contact-card:hover .contact-arrow {
+    transform: translateX(4px);
+    color: var(--text-secondary);
+  }
+
+  /* ── Projects ── */
+  .projects {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+  }
+  .project-card {
+    padding: 20px;
+    border-radius: var(--radius-sm);
+    background: var(--glass);
+    border: 1px solid var(--glass-border);
+    backdrop-filter: blur(40px);
+    -webkit-backdrop-filter: blur(40px);
+    transition: background 0.35s var(--ease), border-color 0.35s var(--ease), transform 0.35s var(--ease);
+    cursor: default;
+  }
+  .project-card:hover {
+    background: var(--glass-hover);
+    border-color: rgba(255,255,255,0.1);
+    transform: translateY(-2px);
+  }
+  .project-card h3 {
+    font-size: 14px;
+    font-weight: 600;
+    margin-bottom: 6px;
+    letter-spacing: -0.2px;
+  }
+  .project-card p {
+    font-size: 12.5px;
+    color: var(--text-secondary);
+    line-height: 1.5;
+  }
+  .project-tag {
+    display: inline-block;
+    margin-top: 10px;
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: 0.2px;
+    background: rgba(255,255,255,0.04);
+    color: var(--text-tertiary);
+  }
+
+  /* ── Footer ── */
+  footer {
+    text-align: center;
+    padding-top: 20px;
+    opacity: 0;
+    animation: fadeUp 0.9s var(--ease) 0.8s forwards;
+  }
+  footer p {
+    font-size: 12px;
+    color: var(--text-tertiary);
+    letter-spacing: 0.5px;
+  }
+
+  /* ── Responsive ── */
+  @media (max-width: 520px) {
+    .container { padding: 48px 16px 80px; }
+    h1 { font-size: 24px; }
+    .projects { grid-template-columns: 1fr; }
+    .liquid-bg .orb:nth-child(1) { width: 400px; height: 400px; }
+    .liquid-bg .orb:nth-child(2) { width: 350px; height: 350px; }
+    .liquid-bg .orb:nth-child(3) { width: 280px; height: 280px; }
+    .liquid-bg .orb:nth-child(4) { width: 250px; height: 250px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="liquid-bg">
+  <div class="orb"></div>
+  <div class="orb"></div>
+  <div class="orb"></div>
+  <div class="orb"></div>
+</div>
+<div class="grain"></div>
+
+<div class="container">
+
+  <header>
+    <div class="avatar-wrapper">
+      <div class="avatar">S</div>
+    </div>
+    <span class="name-cn">大吉</span>
+    <h1>Saki</h1>
+    <p class="subtitle">从销售到创作者 · 探索虚拟产品变现</p>
+    <span class="badge">✦ 目前开放合作</span>
+  </header>
+
+  <section>
+    <p class="section-label">关于</p>
+    <div class="bio glass">
+      <p>
+        前外企销售，转身成为独立创作者。正在小红书这片土壤上，实验虚拟产品与私域变现的可能性。不为复制某个成功路径，而是用自己的方式，把「会卖」这项技能翻译给这代际的内容生态。
+      </p>
+    </div>
+  </section>
+
+  <section>
+    <p class="section-label">联系</p>
+    <a href="mailto:sakicheuk@gmail.com" class="contact-card">
+      <span class="contact-left">
+        <span class="contact-icon">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
+        </span>
+        <span>
+          <div class="contact-label">Email</div>
+          sakicheuk@gmail.com
+        </span>
+      </span>
+      <span class="contact-arrow">→</span>
+    </a>
+  </section>
+
+  <section>
+    <p class="section-label">精选项目</p>
+    <div class="projects">
+      <div class="project-card">
+        <h3>Lumina</h3>
+        <p>AI 驱动的配色系统，从意象生成调色板</p>
+        <span class="project-tag">React · AI</span>
+      </div>
+      <div class="project-card">
+        <h3>Mono</h3>
+        <p>极简字体排印框架，专注阅读体验</p>
+        <span class="project-tag">CSS · 设计</span>
+      </div>
+      <div class="project-card">
+        <h3>Echo</h3>
+        <p>轻量级组件库，为创意开发者打造</p>
+        <span class="project-tag">Vue · TS</span>
+      </div>
+      <div class="project-card">
+        <h3>Drift</h3>
+        <p>视觉日记，记录日常中的设计碎片</p>
+        <span class="project-tag">摄影 · 随笔</span>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <p>© 2026 Saki</p>
+  </footer>
+
+</div>
+</body>
+</html>
