@@ -18,10 +18,12 @@
     --glass-border: rgba(255,255,255,0.06);
     --glass-hover: rgba(255,255,255,0.08);
     --text-primary: rgba(255,255,255,0.92);
-    --text-secondary: rgba(255,255,255,0.5);
+    --text-secondary: rgba(255,255,255,0.55);
     --text-tertiary: rgba(255,255,255,0.3);
+    --accent: #2563eb;
+    --accent-glow: rgba(37,99,235,0.15);
     --radius: 20px;
-    --radius-sm: 12px;
+    --radius-sm: 14px;
     --ease: cubic-bezier(0.25, 0.1, 0.25, 1);
   }
 
@@ -98,7 +100,7 @@
     50% { transform: translate(-50px, 40px) scale(1.15); }
   }
 
-  /* ── Grain overlay ── */
+  /* ── Grain ── */
   .grain {
     position: fixed;
     inset: 0;
@@ -115,11 +117,11 @@
     position: relative;
     z-index: 2;
     width: 100%;
-    max-width: 680px;
+    max-width: 700px;
     padding: 80px 24px 120px;
   }
 
-  /* ── Glass card ── */
+  /* ── Glass card (shared) ── */
   .glass {
     background: var(--glass);
     backdrop-filter: blur(40px);
@@ -128,7 +130,7 @@
     border-radius: var(--radius);
   }
 
-  /* ── Header / Avatar ── */
+  /* ── Header ── */
   header {
     display: flex;
     flex-direction: column;
@@ -187,30 +189,32 @@
     color: var(--text-secondary);
     font-weight: 400;
     line-height: 1.5;
+    max-width: 380px;
   }
   .badge {
     display: inline-block;
-    margin-top: 16px;
+    margin-top: 18px;
     padding: 5px 14px;
     border-radius: 100px;
     font-size: 12px;
     font-weight: 500;
     letter-spacing: 0.3px;
-    color: var(--text-secondary);
-    background: var(--glass);
-    border: 1px solid var(--glass-border);
+    color: var(--accent);
+    background: var(--accent-glow);
+    border: 1px solid rgba(37,99,235,0.15);
     backdrop-filter: blur(20px);
   }
 
   /* ── Section ── */
   section {
-    margin-bottom: 40px;
+    margin-bottom: 44px;
     opacity: 0;
     animation: fadeUp 0.9s var(--ease) forwards;
   }
   section:nth-of-type(1) { animation-delay: 0.2s; }
   section:nth-of-type(2) { animation-delay: 0.35s; }
   section:nth-of-type(3) { animation-delay: 0.5s; }
+
   .section-label {
     font-size: 11px;
     font-weight: 600;
@@ -219,6 +223,7 @@
     color: var(--text-tertiary);
     margin-bottom: 16px;
   }
+
   @keyframes fadeUp {
     from { opacity: 0; transform: translateY(16px); }
     to { opacity: 1; transform: translateY(0); }
@@ -226,12 +231,16 @@
 
   /* ── Bio ── */
   .bio {
-    padding: 20px 24px;
+    padding: 24px 28px;
   }
   .bio p {
-    font-size: 15px;
+    font-size: 14.5px;
     color: var(--text-secondary);
-    line-height: 1.8;
+    line-height: 1.85;
+  }
+  .bio .hl {
+    color: var(--accent);
+    font-weight: 600;
   }
 
   /* ── Contact ── */
@@ -239,7 +248,7 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 16px 20px;
+    padding: 18px 22px;
     border-radius: var(--radius-sm);
     background: var(--glass);
     border: 1px solid var(--glass-border);
@@ -261,81 +270,123 @@
   .contact-left {
     display: flex;
     align-items: center;
-    gap: 12px;
+    gap: 14px;
   }
   .contact-icon {
-    width: 36px; height: 36px;
-    border-radius: 10px;
-    background: rgba(100,181,246,0.1);
-    color: #64b5f6;
+    width: 40px; height: 40px;
+    border-radius: 12px;
+    background: var(--accent-glow);
+    color: var(--accent);
     display: flex;
     align-items: center;
     justify-content: center;
     flex-shrink: 0;
   }
-  .contact-label {
+  .contact-info {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+  .contact-email {
+    font-size: 14px;
+    font-weight: 500;
+    letter-spacing: -0.1px;
+  }
+  .contact-tagline {
     font-size: 12px;
     color: var(--text-tertiary);
-    letter-spacing: 0.5px;
+    white-space: nowrap;
   }
   .contact-arrow {
     font-size: 14px;
     color: var(--text-tertiary);
     transition: transform 0.3s var(--ease), color 0.3s var(--ease);
+    flex-shrink: 0;
   }
   .contact-card:hover .contact-arrow {
     transform: translateX(4px);
     color: var(--text-secondary);
   }
 
-  /* ── Projects ── */
+  /* ── Projects (Bento) ── */
   .projects {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 10px;
+    gap: 12px;
   }
   .project-card {
-    padding: 20px;
+    padding: 24px 22px;
     border-radius: var(--radius-sm);
-    background: var(--glass);
+    background: linear-gradient(135deg, rgba(255,255,255,0.04) 0%, rgba(255,255,255,0.02) 100%);
     border: 1px solid var(--glass-border);
     backdrop-filter: blur(40px);
     -webkit-backdrop-filter: blur(40px);
-    transition: background 0.35s var(--ease), border-color 0.35s var(--ease), transform 0.35s var(--ease);
+    box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+    transition: background 0.35s var(--ease), border-color 0.35s var(--ease), transform 0.35s var(--ease), box-shadow 0.35s var(--ease);
     cursor: default;
+    position: relative;
+    overflow: hidden;
+  }
+  .project-card::after {
+    content: '';
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background: linear-gradient(135deg, rgba(37,99,235,0.03) 0%, transparent 60%);
+    pointer-events: none;
   }
   .project-card:hover {
-    background: var(--glass-hover);
+    background: linear-gradient(135deg, rgba(255,255,255,0.06) 0%, rgba(255,255,255,0.03) 100%);
     border-color: rgba(255,255,255,0.1);
-    transform: translateY(-2px);
+    transform: translateY(-3px);
+    box-shadow: 0 12px 40px rgba(0,0,0,0.4);
+  }
+  .project-card:first-child {
+    grid-column: 1 / -1;
+  }
+  .project-card .card-number {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    color: var(--accent);
+    margin-bottom: 8px;
   }
   .project-card h3 {
-    font-size: 14px;
+    font-size: 16px;
     font-weight: 600;
-    margin-bottom: 6px;
+    margin-bottom: 8px;
     letter-spacing: -0.2px;
   }
   .project-card p {
-    font-size: 12.5px;
+    font-size: 13px;
     color: var(--text-secondary);
-    line-height: 1.5;
+    line-height: 1.65;
+  }
+  .project-card .hl {
+    color: var(--accent);
+    font-weight: 700;
+  }
+  .project-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-top: 14px;
   }
   .project-tag {
-    display: inline-block;
-    margin-top: 10px;
-    padding: 2px 8px;
+    padding: 3px 10px;
     border-radius: 4px;
-    font-size: 10px;
+    font-size: 10.5px;
     font-weight: 500;
     letter-spacing: 0.2px;
-    background: rgba(255,255,255,0.04);
-    color: var(--text-tertiary);
+    background: rgba(37,99,235,0.08);
+    color: rgba(100,181,246,0.9);
+    border: 1px solid rgba(37,99,235,0.12);
   }
 
   /* ── Footer ── */
   footer {
     text-align: center;
-    padding-top: 20px;
+    padding-top: 16px;
     opacity: 0;
     animation: fadeUp 0.9s var(--ease) 0.8s forwards;
   }
@@ -350,6 +401,8 @@
     .container { padding: 48px 16px 80px; }
     h1 { font-size: 24px; }
     .projects { grid-template-columns: 1fr; }
+    .project-card:first-child { grid-column: 1; }
+    .contact-tagline { white-space: normal; }
     .liquid-bg .orb:nth-child(1) { width: 400px; height: 400px; }
     .liquid-bg .orb:nth-child(2) { width: 350px; height: 350px; }
     .liquid-bg .orb:nth-child(3) { width: 280px; height: 280px; }
@@ -375,7 +428,7 @@
     </div>
     <span class="name-cn">大吉</span>
     <h1>Saki</h1>
-    <p class="subtitle">从销售到创作者 · 探索虚拟产品变现</p>
+    <p class="subtitle">8年外企销售精英 · 现全面转型独立创作者</p>
     <span class="badge">✦ 目前开放合作</span>
   </header>
 
@@ -383,7 +436,8 @@
     <p class="section-label">关于</p>
     <div class="bio glass">
       <p>
-        前外企销售，转身成为独立创作者。正在小红书这片土壤上，实验虚拟产品与私域变现的可能性。不为复制某个成功路径，而是用自己的方式，把「会卖」这项技能翻译给这代际的内容生态。
+        前外企大客户销售经理，拥有 <span class="hl">8</span> 年商业谈判与用户洞察沉淀。曾创下帮客户实现 <span class="hl">120%</span> 业绩增长的纪录。<br><br>
+        现转身成为独立创作者，已亲自跑通视频号带货闭环。目前正深耕小红书，将传统的商业销售逻辑，转化为轻量化的「虚拟数字资产」，实验私域变现的全新可能。不盲从复制，只用实战结果说话。
       </p>
     </div>
   </section>
@@ -395,9 +449,9 @@
         <span class="contact-icon">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
         </span>
-        <span>
-          <div class="contact-label">Email</div>
-          sakicheuk@gmail.com
+        <span class="contact-info">
+          <span class="contact-email">sakicheuk@gmail.com</span>
+          <span class="contact-tagline">欢迎链接，一起探索数字化搞钱的更多可能</span>
         </span>
       </span>
       <span class="contact-arrow">→</span>
@@ -405,27 +459,37 @@
   </section>
 
   <section>
-    <p class="section-label">精选项目</p>
+    <p class="section-label">实战历程</p>
     <div class="projects">
       <div class="project-card">
-        <h3>Lumina</h3>
-        <p>AI 驱动的配色系统，从意象生成调色板</p>
-        <span class="project-tag">React · AI</span>
+        <div class="card-number">01</div>
+        <h3>8年外企销售专家</h3>
+        <p>曾操盘百万级 B2B 业务，精准洞察用户痛点，实现业绩逆势增长 <span class="hl">120%</span>。深谙大客户运营与商业闭环逻辑。</p>
+        <div class="project-tags">
+          <span class="project-tag">商业增长</span>
+          <span class="project-tag">谈判策略</span>
+          <span class="project-tag">客户成功</span>
+        </div>
       </div>
       <div class="project-card">
-        <h3>Mono</h3>
-        <p>极简字体排印框架，专注阅读体验</p>
-        <span class="project-tag">CSS · 设计</span>
+        <div class="card-number">02</div>
+        <h3>视频号带货实战 MVP</h3>
+        <p>从 <span class="hl">0</span> 到 <span class="hl">1</span> 亲自跑通短视频带货，成功实现数千元变现。完成了「流量→信任→成交」的个人自媒体闭环实验。</p>
+        <div class="project-tags">
+          <span class="project-tag">短视频运营</span>
+          <span class="project-tag">流量变现</span>
+          <span class="project-tag">电商实战</span>
+        </div>
       </div>
       <div class="project-card">
-        <h3>Echo</h3>
-        <p>轻量级组件库，为创意开发者打造</p>
-        <span class="project-tag">Vue · TS</span>
-      </div>
-      <div class="project-card">
-        <h3>Drift</h3>
-        <p>视觉日记，记录日常中的设计碎片</p>
-        <span class="project-tag">摄影 · 随笔</span>
+        <div class="card-number">03</div>
+        <h3>小红书虚拟资料项目</h3>
+        <p>正在将 <span class="hl">8</span> 年外企积累的职场、销售、搞钱方法论，封装为高价值的数字化资料包。通过小红书平台获取精准流量。</p>
+        <div class="project-tags">
+          <span class="project-tag">小红书</span>
+          <span class="project-tag">虚拟产品</span>
+          <span class="project-tag">数字化资产</span>
+        </div>
       </div>
     </div>
   </section>
